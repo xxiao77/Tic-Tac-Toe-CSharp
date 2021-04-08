@@ -7,16 +7,13 @@ class GUI
     private char winner;
 
     // constructor
-    public GUI()
-    {
-        board = new char[3, 3];
-        turns = 0;
-    }
+    public GUI() { }
 
     public void gameProcess()
     {
         do
         {
+            initGame();
             selectPlayer();
             printBoard();
             // return;
@@ -30,11 +27,15 @@ class GUI
             } while (!isGameEnd());
         } while (displayEndGame());
     }
-    public static void Main(string[] args)
+    private void initGame()
     {
-        new GUI().gameProcess();
+        board = new char[3, 3];
+        turns = 0;
+        winner = (char)0;
+        oPlayer = null;
+        xPlayer = null;
+        curPlayer = null;
     }
-
     private void selectPlayer()
     {
         oPlayer = setPlayer('O');
@@ -64,19 +65,15 @@ class GUI
         return ret;
     }
     // print board
-    // | 1 || 2 || 3 |
-    // | 4 || 5 || 6 |
-    // | 7 || 8 || 9 |
     private void printBoard()
     {
-        int n = 1;
-
+        Console.WriteLine();
         for (int r = 0; r < 3; r++)
         {
             for (int c = 0; c < 3; c++)
             {
                 // one line solution
-                // Console.Write("| " + (board[r, c] != 0 ? board[r, c] : n) + " |");
+                // Console.Write("| " + (board[r, c] != 0 ? board[r, c] : ' ') + " |");
 
                 switch (board[r, c])
                 {
@@ -87,10 +84,9 @@ class GUI
                         Console.Write("| " + 'O' + " |");
                         break;
                     default:
-                        Console.Write("| " + n + " |");
+                        Console.Write("| " + ' ' + " |");
                         break;
                 }
-                n++;
             }
 
             Console.WriteLine();
@@ -100,18 +96,22 @@ class GUI
     {
         for (int i = 0; i < 3; i++)
         {
-            if (board[i, 0] == board[i, 1] && board[i, 0] == board[i, 2])
+            if (board[i, 0] != 0 && board[i, 0] == board[i, 1] && board[i, 0] == board[i, 2])
             {
+                winner = board[i, 0];
                 return true;
             }
-            if (board[0, i] == board[1, i] && board[0, i] == board[2, i])
+            if (board[0, i] != 0 && board[0, i] == board[1, i] && board[0, i] == board[2, i])
             {
+                winner = board[0, i];
                 return true;
             }
         }
 
-        if ((board[0, 0] == board[1, 1] && board[0, 0] == board[2, 2]) || (board[0, 2] == board[1, 1] && board[0, 2] == board[2, 0]))
+        if ((board[0, 0] != 0 && board[0, 0] == board[1, 1] && board[0, 0] == board[2, 2]) ||
+            (board[0, 2] != 0 && board[0, 2] == board[1, 1] && board[0, 2] == board[2, 0]))
         {
+            winner = board[1, 1];
             return true;
         }
         if (turns == 9)
@@ -123,18 +123,31 @@ class GUI
 
     private bool displayEndGame()
     {
-        Console.WriteLine("Player" + winner + "Win!");
+        if (winner == 0)
+        {
+            Console.WriteLine("The game is a draw!");
+        }
+        else
+        {
+            Console.WriteLine("Player " + winner + " Win!");
+        }
         Console.WriteLine("Would you like to play again? Y/N");
         string p = Console.ReadLine();
 
         switch (p)
         {
+            case "y":
             case "Y":
                 return true;
             default:
                 return false;
         }
 
+    }
+
+    public static void Main(string[] args)
+    {
+        new GUI().gameProcess();
     }
 }
 

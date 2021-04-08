@@ -1,10 +1,17 @@
+using System;
+
 abstract class Player
 {
-    protected char player;
+    private char pSymbol;
 
+    public char PSymbol
+    {
+        get { return pSymbol; }
+    }
     protected Player(char p)
     {
-        player = p;
+        pSymbol = p;
+        // Console.WriteLine(PSymbol);
     }
     public abstract void Play(char[,] board);
 }
